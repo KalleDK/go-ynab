@@ -1,7 +1,7 @@
 package ynab
 
 import (
-    "github.com/google/uuid"
+	"github.com/google/uuid"
 )
 
 type UserID struct {
@@ -9,10 +9,10 @@ type UserID struct {
 }
 
 func NewUserID(s string) (userID UserID, err error) {
-    userID.UUID, err = uuid.Parse(s)
-    if err != nil {
-        return
-    }
+	userID.UUID, err = uuid.Parse(s)
+	if err != nil {
+		return
+	}
 
-    return
+	return
 }

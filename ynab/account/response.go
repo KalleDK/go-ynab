@@ -1,5 +1,5 @@
 package account
 
 type Response struct {
-    Data Wrapper  `json:"data"`
+	Data Wrapper `json:"data"`
 }

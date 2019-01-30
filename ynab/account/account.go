@@ -1,8 +1,10 @@
-//go:generate mockgen github.com/kalledk/go-ynab/ynab/account APIGetter
-
 package account
 
-import "path"
+import (
+	"path"
+
+	"github.com/kalledk/go-ynab/ynab/endpoint"
+)
 
 type Account struct {
 	ID               ID     `json:"id"`
@@ -17,18 +19,16 @@ type Account struct {
 	Note             string `json:"note,omitempty"`
 }
 
-type APIGetter interface {
-	Get(path string, responseModel interface{}) (err error)
-}
+const (
+	apiPath = "accounts"
+)
 
-const apiPath = "accounts"
-
-func get(client APIGetter, subpath string, model interface{}) (err error) {
+func get(client endpoint.Getter, subpath string, model interface{}) (err error) {
 	accPath := path.Join(apiPath, subpath)
 	return client.Get(accPath, model)
 }
 
-func GetAccount(client APIGetter, id ID) (acc Account, err error) {
+func GetAccount(client endpoint.Getter, id ID) (acc Account, err error) {
 	var resp Response
 
 	err = get(client, id.String(), &resp)

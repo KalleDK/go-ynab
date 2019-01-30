@@ -1,5 +1,5 @@
 package ynab
 
 type UserWrapper struct {
-    User User
+	User User
 }

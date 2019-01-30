@@ -1,5 +1,5 @@
 package account
 
 type Wrapper struct {
-    Account Account  `json:"account"`
+	Account Account `json:"account"`
 }

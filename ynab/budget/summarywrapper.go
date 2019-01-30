@@ -1,5 +1,5 @@
 package budget
 
 type SummaryWrapper struct {
-    Budgets []Summary  `json:"budgets"`
+	Budgets []Summary `json:"budgets"`
 }

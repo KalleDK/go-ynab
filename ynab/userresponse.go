@@ -1,5 +1,5 @@
 package ynab
 
 type UserResponse struct {
-    Data UserWrapper
+	Data UserWrapper
 }
