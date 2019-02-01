@@ -1,11 +1,5 @@
 package account
 
-import (
-	"path"
-
-	"github.com/kalledk/go-ynab/ynab/endpoint"
-)
-
 type Account struct {
 	ID               ID     `json:"id"`
 	Name             string `json:"name"`
@@ -19,23 +13,4 @@ type Account struct {
 	Note             string `json:"note,omitempty"`
 }
 
-const (
-	apiPath = "accounts"
-)
-
-func get(client endpoint.Getter, subpath string, model interface{}) (err error) {
-	accPath := path.Join(apiPath, subpath)
-	return client.Get(accPath, model)
-}
-
-func GetAccount(client endpoint.Getter, id ID) (acc Account, err error) {
-	var resp Response
-
-	err = get(client, id.String(), &resp)
-	if err != nil {
-		return
-	}
-
-	acc = resp.Data.Account
-	return
-}
+type AccountList = []Account

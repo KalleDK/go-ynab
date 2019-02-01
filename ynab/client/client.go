@@ -1,91 +1,51 @@
 package client
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 
-	"github.com/kalledk/go-ynab/ynab"
+	"golang.org/x/oauth2"
+
+	"github.com/kalledk/go-ynab/ynab/api"
+	"github.com/kalledk/go-ynab/ynab/endpoint"
+	"github.com/kalledk/go-ynab/ynab/user"
 )
 
-type HttpClient interface {
-	Do(req *http.Request) (*http.Response, error)
-}
-
-const ApiEndpoint = "https://api.youneedabudget.com/v1/"
-
 type Client struct {
-	Endpoint    *url.URL
-	AccessToken ynab.AccessToken
-	Client      HttpClient
-	/*
-		sync.Mutex
-		rateLimit *api.RateLimit
-	*/
+	Endpoint endpoint.API
 }
 
-func (c *Client) Get(path string, responseModel interface{}) (err error) {
-	return c.Do(http.MethodGet, path, responseModel, nil)
+var defaultURL, _ = url.Parse("https://api.youneedabudget.com/v1/")
+
+func NewClient(token api.AccessToken) *Client {
+
+	return &Client{
+		Endpoint: &APIEndpoint{
+			Url: defaultURL,
+			JsonClient: &ReflectJsonClient{
+				ErrorModel: api.ErrorResponse{},
+				HttpClient: &http.Client{
+					Transport: &oauth2.Transport{
+						Source: oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token.String()}),
+					},
+				},
+			},
+		},
+	}
 }
 
-func (c *Client) Do(method string, path string, responseModel interface{}, reqbody []byte) (err error) {
-	fmt.Println(path)
-	requrl, err := c.Endpoint.Parse(path)
-	if err != nil {
-		return err
-	}
-	fmt.Println(requrl)
-	req, err := http.NewRequest(method, requrl.String(), bytes.NewBuffer(reqbody))
-	if err != nil {
-		return err
-	}
-
-	req.Header.Set("Accept", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.AccessToken))
-	if method == http.MethodPost || method == http.MethodPut {
-		req.Header.Set("Content-Type", "application/json")
-	}
-
-	res, err := c.Client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-
-	if res.StatusCode >= 400 {
-		var errorResponse ynab.ErrorResponse
-		if err = json.Unmarshal(body, &errorResponse); err != nil {
-			return err
-		}
-
-		return errorResponse.Error
-	}
-
-	//fmt.Println(string(body[:]))
-
-	return json.Unmarshal(body, &responseModel)
+func (c *Client) User() *UserClient {
+	return &UserClient{endpoint.Down(c.Endpoint, "user")}
 }
 
-func NewClient(accessToken ynab.AccessToken) (client *Client) {
+func (c *Client) Budgets() *BudgetListClient {
+	return &BudgetListClient{endpoint.Down(c.Endpoint, "budgets")}
+}
 
-	endpoint, err := url.Parse(ApiEndpoint)
-	if err != nil {
-		log.Fatalf("invalid endpoint %v", ApiEndpoint)
-	}
+func (c *Client) Budgets() *BudgetListClient {
+	return &BudgetListClient{endpoint.Down(c.Endpoint, "budgets")}
+}
 
-	client = &Client{
-		Endpoint:    endpoint,
-		AccessToken: accessToken,
-		Client:      http.DefaultClient,
-	}
-	return
+func GetUser(client *Client) (user.User, error) {
+	return client.User().Get()
 }

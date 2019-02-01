@@ -4,61 +4,84 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"testing"
 
-	"github.com/kalledk/go-ynab/ynab"
+	"github.com/kalledk/go-ynab/ynab/account"
+	"github.com/kalledk/go-ynab/ynab/api"
 	"github.com/kalledk/go-ynab/ynab/budget"
-	//"net/url"
+	"github.com/kalledk/go-ynab/ynab/payee"
+	"github.com/kalledk/go-ynab/ynab/transaction"
 )
 
-func TestAccountID(t *testing.T) {
-	at, err := ynab.NewAccessToken(os.Getenv("YNAB_TOKEN"))
-	if err != nil {
-		t.Fatalf("invalid token")
-	}
-	c := NewClient(at)
-	fmt.Println(c)
-}
-
-func TestError(t *testing.T) {
-	at, err := ynab.NewAccessToken(os.Getenv("YNAB_TOKEN"))
-	if err != nil {
-		t.Fatalf("invalid token")
-	}
-	c := NewClient(at)
-
-	path := "user"
-	var userResponse ynab.UserResponse
-	err = c.Do(http.MethodGet, path, &userResponse, nil)
-	if err != nil {
-		t.Fatalf("invalid response %v", err)
-	}
-	fmt.Println(userResponse.Data.User)
-}
-
-func TestBudgets(t *testing.T) {
-	at, err := ynab.NewAccessToken(os.Getenv("YNAB_TOKEN"))
-	if err != nil {
-		t.Fatalf("invalid token")
-	}
-	c := NewClient(at)
-
-	path := "budgets"
-	var budgetResponse budget.SummaryResponse
-	err = c.Get(path, &budgetResponse)
-	if err != nil {
-		t.Fatalf("invalid response %v", err)
-	}
-
-	json, err := json.MarshalIndent(budgetResponse.Data.Budgets, "", "  ")
+func SprintJson(model interface{}) string {
+	data, err := json.MarshalIndent(model, "", "  ")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_ = json
+	return string(data)
+}
 
-	//fmt.Println(string(json))
-	//fmt.Println(budgetResponse.Data.Budgets)
+func TestUser(t *testing.T) {
+	token, _ := api.NewAccessToken(os.Getenv("YNAB_TOKEN"))
+	c := NewClient(token)
+	user, err := GetUser(c)
+	fmt.Printf("Error = %v\n", err)
+	fmt.Printf("User = %v\n", SprintJson(user))
+
+}
+
+func TestBudgetSettings(t *testing.T) {
+	token, _ := api.NewAccessToken(os.Getenv("YNAB_TOKEN"))
+	c := NewClient(token)
+
+	budgetID, _ := budget.NewID(os.Getenv("YNAB_BUDGET"))
+	settings, err := GetBudgetSettings(c, budgetID)
+	fmt.Printf("Error = %v\n", err)
+	fmt.Printf("Settings = %v\n", SprintJson(settings))
+}
+
+func TestBudgetTransaction(t *testing.T) {
+	token, _ := api.NewAccessToken(os.Getenv("YNAB_TOKEN"))
+	budgetID, _ := budget.NewID(os.Getenv("YNAB_BUDGET"))
+	transactionID, _ := transaction.NewID(os.Getenv("YNAB_TRANSACTION"))
+	client := NewClient(token)
+	budgetClient := client.Budgets().Budget(budgetID)
+	transaction, err := GetTransaction(budgetClient, transactionID)
+	fmt.Printf("Error = %v\n", err)
+	fmt.Printf("Transaction = %v\n", SprintJson(transaction))
+}
+
+func TestBudgetAddTransaction(t *testing.T) {
+	token, _ := api.NewAccessToken(os.Getenv("YNAB_TOKEN"))
+	budgetID, _ := budget.NewID(os.Getenv("YNAB_BUDGET"))
+	accountID, _ := account.NewID(os.Getenv("YNAB_ACCOUNT"))
+	payeeID, _ := payee.NewID(os.Getenv("YNAB_PAYEE"))
+	client := NewClient(token)
+	transactionClient := client.Budgets().Budget(budgetID).Transactions()
+	s := transaction.SaveTransaction{
+		AccountID: accountID,
+		Date:      "2019-02-01",
+		Amount:    12370,
+		PayeeID:   payeeID,
+		Memo:      "Serial 1234",
+	}
+	reply, err := transactionClient.Add(s)
+	fmt.Printf("Error = %v\n", err)
+	fmt.Printf("Transaction = %v\n", SprintJson(reply))
+}
+
+func TestBudgetPayees(t *testing.T) {
+	token, _ := api.NewAccessToken(os.Getenv("YNAB_TOKEN"))
+	budgetID, _ := budget.NewID(os.Getenv("YNAB_BUDGET"))
+
+	client := NewClient(token)
+	budgetClient := client.Budgets().Budget(budgetID)
+	payeesClient := budgetClient.Payees()
+
+	payees, err := payeesClient.Get()
+
+	fmt.Printf("Error = %v\n", err)
+	fmt.Printf("Payees = %v\n", SprintJson(payees))
 }

@@ -33,89 +33,29 @@ func (m *MockGetter) EXPECT() *MockGetterMockRecorder {
 }
 
 // Get mocks base method
-func (m *MockGetter) Get(path string, responseModel interface{}) error {
+func (m *MockGetter) Get(responseModel interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", path, responseModel)
+	ret := m.ctrl.Call(m, "Get", responseModel)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Get indicates an expected call of Get
-func (mr *MockGetterMockRecorder) Get(path, responseModel interface{}) *gomock.Call {
+func (mr *MockGetterMockRecorder) Get(responseModel interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockGetter)(nil).Get), path, responseModel)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockGetter)(nil).Get), responseModel)
 }
 
-// MockPoster is a mock of Poster interface
-type MockPoster struct {
-	ctrl     *gomock.Controller
-	recorder *MockPosterMockRecorder
-}
-
-// MockPosterMockRecorder is the mock recorder for MockPoster
-type MockPosterMockRecorder struct {
-	mock *MockPoster
-}
-
-// NewMockPoster creates a new mock instance
-func NewMockPoster(ctrl *gomock.Controller) *MockPoster {
-	mock := &MockPoster{ctrl: ctrl}
-	mock.recorder = &MockPosterMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockPoster) EXPECT() *MockPosterMockRecorder {
-	return m.recorder
-}
-
-// Post mocks base method
-func (m *MockPoster) Post(path string, responseModel interface{}) error {
+// GetVia mocks base method
+func (m *MockGetter) GetVia(path string, responseModel interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Post", path, responseModel)
+	ret := m.ctrl.Call(m, "GetVia", path, responseModel)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Post indicates an expected call of Post
-func (mr *MockPosterMockRecorder) Post(path, responseModel interface{}) *gomock.Call {
+// GetVia indicates an expected call of GetVia
+func (mr *MockGetterMockRecorder) GetVia(path, responseModel interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockPoster)(nil).Post), path, responseModel)
-}
-
-// MockPutter is a mock of Putter interface
-type MockPutter struct {
-	ctrl     *gomock.Controller
-	recorder *MockPutterMockRecorder
-}
-
-// MockPutterMockRecorder is the mock recorder for MockPutter
-type MockPutterMockRecorder struct {
-	mock *MockPutter
-}
-
-// NewMockPutter creates a new mock instance
-func NewMockPutter(ctrl *gomock.Controller) *MockPutter {
-	mock := &MockPutter{ctrl: ctrl}
-	mock.recorder = &MockPutterMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockPutter) EXPECT() *MockPutterMockRecorder {
-	return m.recorder
-}
-
-// Put mocks base method
-func (m *MockPutter) Put(path string, responseModel interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Put", path, responseModel)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Put indicates an expected call of Put
-func (mr *MockPutterMockRecorder) Put(path, responseModel interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Put", reflect.TypeOf((*MockPutter)(nil).Put), path, responseModel)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVia", reflect.TypeOf((*MockGetter)(nil).GetVia), path, responseModel)
 }

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "5d4a990e-193b-4971-9d8a-343607de8a8e",
+        "name": "Fælleskonto",
+        "type": "creditCard",
+        "on_budget": true,
+        "balance": 50000,
+        "cleared_balance": 0,
+        "uncleared_balance": 50000,
+        "closed": false,
+        "deleted": false
+    },
+    {
+        "id": "5d4a990e-193b-4971-9d8a-343607de8a8e",
+        "name": "Fælleskonto",
+        "type": "creditCard",
+        "on_budget": true,
+        "balance": 50000,
+        "cleared_balance": 0,
+        "uncleared_balance": 50000,
+        "closed": false,
+        "deleted": false
+    }
+]
