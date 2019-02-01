@@ -42,10 +42,6 @@ func (c *Client) Budgets() *BudgetListClient {
 	return &BudgetListClient{endpoint.Down(c.Endpoint, "budgets")}
 }
 
-func (c *Client) Budgets() *BudgetListClient {
-	return &BudgetListClient{endpoint.Down(c.Endpoint, "budgets")}
-}
-
 func GetUser(client *Client) (user.User, error) {
 	return client.User().Get()
 }
