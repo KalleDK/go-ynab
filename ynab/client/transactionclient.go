@@ -13,6 +13,10 @@ func (c *TransactionsClient) Add(t transaction.SaveTransaction) (transaction.Sav
 	return transaction.Post(c.Endpoint, t)
 }
 
+func (c *TransactionsClient) AddList(t transaction.SaveTransactionList) (transaction.SaveTransactionReplyWrapper, error) {
+	return transaction.PostList(c.Endpoint, t)
+}
+
 func (c *TransactionsClient) Transaction(id transaction.ID) *TransactionClient {
 	return &TransactionClient{endpoint.Down(c.Endpoint, id.String())}
 }

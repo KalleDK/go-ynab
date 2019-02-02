@@ -2,49 +2,67 @@ package transaction
 
 import (
 	"github.com/kalledk/go-ynab/ynab/account"
+	"github.com/kalledk/go-ynab/ynab/category"
 	"github.com/kalledk/go-ynab/ynab/payee"
 )
 
-type BaseTransaction struct {
-	ID ID `json:"id"`
-
-	// Amount sub-transaction amount in milliunits format
-	Amount int64 `json:"amount"`
-	// Deleted Deleted sub-transactions will only be included in delta requests.
-	Deleted bool `json:"deleted"`
-
-	Memo       string   `json:"memo"`
-	PayeeID    payee.ID `json:"payee_id"`
-	CategoryID string   `json:"category_id"`
-	// TransferAccountID If a transfer, the account_id which the
-	// sub-transaction transfers to
-	TransferAccountID string `json:"transfer_account_id"`
-}
-
 type SubTransaction struct {
-	BaseTransaction
-	TransactionID string `json:"transaction_id"`
+	Amount            int64      `json:"amount"`
+	Memo              string     `json:"memo"`
+	PayeeID           payee.ID   `json:"payee_id"`
+	CategoryID        string     `json:"category_id"`
+	ID                ID         `json:"id"`
+	Deleted           bool       `json:"deleted"`
+	TransferAccountID account.ID `json:"transfer_account_id"`
+	SuperID           ID         `json:"transaction_id"`
 }
 
 type Summary struct {
-	BaseTransaction
-	Date string `json:"date"`
+	ID ID `json:"id"`
 
-	// Amount Transaction amount in milliunits format
+	Date   string `json:"date"`
+	Amount int64  `json:"amount"`
+
+	Memo string `json:"memo"`
+
+	PayeeID    payee.ID    `json:"payee_id"`
+	CategoryID category.ID `json:"category_id"`
+	AccountID  account.ID  `json:"account_id"`
 
 	Cleared   ClearingStatus `json:"cleared"`
+	FlagColor FlagColor      `json:"flag_color"`
 	Approved  bool           `json:"approved"`
-	AccountID account.ID     `json:"account_id"`
 
-	FlagColor FlagColor `json:"flag_color"`
-
-	// ImportID If the Transaction was imported, this field is a unique (by account) import
-	// identifier. If this transaction was imported through File Based Import or
-	// Direct Import and not through the API, the import_id will have the format:
-	// 'YNAB:[milliunit_amount]:[iso_date]:[occurrence]'. For example, a transaction
-	// dated 2015-12-30 in the amount of -$294.23 USD would have an import_id of
-	// 'YNAB:-294230:2015-12-30:1’. If a second transaction on the same account
-	// was imported and had the same date and same amount, its import_id would
-	// be 'YNAB:-294230:2015-12-30:2’.
 	ImportID string `json:"import_id"`
+
+	Deleted           bool       `json:"deleted"`
+	TransferAccountID account.ID `json:"transfer_account_id"`
 }
+
+type Transaction struct {
+	ID     ID     `json:"id"`
+	Date   string `json:"date"`
+	Amount int64  `json:"amount"`
+	Memo   string `json:"memo"`
+
+	PayeeID           payee.ID    `json:"payee_id"`
+	PayeeName         string      `json:"payee_name"`
+	CategoryID        category.ID `json:"category_id"`
+	CategoryName      string      `json:"category_name"`
+	AccountID         account.ID  `json:"account_id"`
+	AccountName       string      `json:"account_name"`
+	TransferAccountID account.ID  `json:"transfer_account_id"`
+
+	Cleared   ClearingStatus `json:"cleared"`
+	FlagColor FlagColor      `json:"flag_color"`
+	Approved  bool           `json:"approved"`
+	Deleted   bool           `json:"deleted"`
+
+	ImportID string `json:"import_id"`
+
+	SubTransactions SubTransactionList `json:"subtransactions"`
+}
+
+type SubTransactionList = []SubTransaction
+
+type TransactionList = []Transaction

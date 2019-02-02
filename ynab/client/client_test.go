@@ -72,6 +72,27 @@ func TestBudgetAddTransaction(t *testing.T) {
 	fmt.Printf("Transaction = %v\n", SprintJson(reply))
 }
 
+func TestBudgetAddTransactions(t *testing.T) {
+	token, _ := api.NewAccessToken(os.Getenv("YNAB_TOKEN"))
+	budgetID, _ := budget.NewID(os.Getenv("YNAB_BUDGET"))
+	accountID, _ := account.NewID(os.Getenv("YNAB_ACCOUNT"))
+	payeeID, _ := payee.NewID(os.Getenv("YNAB_PAYEE"))
+	client := NewClient(token)
+	transactionClient := client.Budgets().Budget(budgetID).Transactions()
+	s := transaction.SaveTransactionList{
+		transaction.SaveTransaction{
+			AccountID: accountID,
+			Date:      "2019-02-01",
+			Amount:    12390,
+			PayeeID:   payeeID,
+			Memo:      "Serial 1234",
+		},
+	}
+	reply, err := transactionClient.AddList(s)
+	fmt.Printf("Error = %v\n", err)
+	fmt.Printf("Transaction = %v\n", SprintJson(reply))
+}
+
 func TestBudgetPayees(t *testing.T) {
 	token, _ := api.NewAccessToken(os.Getenv("YNAB_TOKEN"))
 	budgetID, _ := budget.NewID(os.Getenv("YNAB_BUDGET"))
