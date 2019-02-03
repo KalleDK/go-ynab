@@ -1,48 +1,11 @@
 package transaction
 
-import "github.com/kalledk/go-ynab/ynab/endpoint"
-
-type DetailWrapper struct {
-	Transaction Transaction `json:"transaction"`
-}
-
-type SaveTransactionReplyResponse struct {
-	Data SaveTransactionReplyWrapper `json:"data"`
-}
-
-type SaveTransactionReplyWrapper struct {
-	IDs                []ID            `json:"transaction_ids"`
-	Transaction        Transaction     `json:"transaction"`
-	Transactions       TransactionList `json:"transactions"`
-	DuplicateImportIDs []string        `json:"duplicate_import_ids"`
-}
-
-type TransactionFormWrapper struct {
-	Transaction TransactionForm `json:"transaction,omitempty"`
-}
-
-type SaveTransactionListWrapper struct {
-	Transactions TransactionFormList `json:"transactions,omitempty"`
-}
-
-type DetailResponse struct {
-	Data DetailWrapper `json:"data"`
-}
-
-func Get(baseEndpoint endpoint.Getter) (t Transaction, err error) {
-	var response struct {
-		Data struct {
-			Transaction `json:"transaction"`
-		} `json:"data"`
-	}
-
-	err = baseEndpoint.Get(&response)
-	if err != nil {
-		return
-	}
-
-	return response.Data.Transaction, nil
-}
+import (
+	"github.com/kalledk/go-ynab/ynab/account"
+	"github.com/kalledk/go-ynab/ynab/category"
+	"github.com/kalledk/go-ynab/ynab/endpoint"
+	"github.com/kalledk/go-ynab/ynab/payee"
+)
 
 type Result struct {
 	IDs                []ID        `json:"transaction_ids"`
@@ -51,9 +14,9 @@ type Result struct {
 }
 
 type Results struct {
-	IDs                []ID        `json:"transaction_ids"`
+	IDs                []ID          `json:"transaction_ids"`
 	Transaction        []Transaction `json:"transactions"`
-	DuplicateImportIDs []string    `json:"duplicate_import_ids"`
+	DuplicateImportIDs []string      `json:"duplicate_import_ids"`
 }
 
 type saveTransaction struct {
@@ -61,16 +24,16 @@ type saveTransaction struct {
 	Amount int64  `json:"amount"`
 	Memo   string `json:"memo"`
 
-	PayeeID           payee.ID    `json:"payee_id"`
-	PayeeName         string      `json:"payee_name"`
-	CategoryID        category.ID `json:"category_id"`
-	
-	AccountID         account.ID  `json:"account_id"`
+	PayeeID    payee.ID    `json:"payee_id"`
+	PayeeName  string      `json:"payee_name"`
+	CategoryID category.ID `json:"category_id"`
+
+	AccountID account.ID `json:"account_id"`
 
 	Cleared   ClearingStatus `json:"cleared"`
 	FlagColor FlagColor      `json:"flag_color"`
 	Approved  bool           `json:"approved"`
-	
+
 	ImportID string `json:"import_id"`
 }
 
@@ -90,6 +53,21 @@ func makeSaveTransaction(t Transaction) saveTransaction {
 	}
 }
 
+func Get(baseEndpoint endpoint.Getter) (t Transaction, err error) {
+	var response struct {
+		Data struct {
+			Transaction Transaction `json:"transaction"`
+		} `json:"data"`
+	}
+
+	err = baseEndpoint.Get(&response)
+	if err != nil {
+		return
+	}
+
+	return response.Data.Transaction, nil
+}
+
 func Post(e endpoint.API, t Transaction) (r Result, err error) {
 	var response struct {
 		Data Result `json:"data"`
@@ -101,7 +79,7 @@ func Post(e endpoint.API, t Transaction) (r Result, err error) {
 		makeSaveTransaction(t),
 	}
 
-	err = baseEndpoint.Post(data, &response)
+	err = e.Post(data, &response)
 	if err != nil {
 		return
 	}
@@ -116,7 +94,7 @@ func PostList(e endpoint.API, ts []Transaction) (reply Results, err error) {
 	data := struct {
 		Transactions []saveTransaction `json:"transactions"`
 	}{
-		make([]saveTransaction, y),
+		make([]saveTransaction, len(ts)),
 	}
 
 	for i, t := range ts {

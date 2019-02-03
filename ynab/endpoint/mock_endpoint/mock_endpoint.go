@@ -9,6 +9,85 @@ import (
 	reflect "reflect"
 )
 
+// MockAPI is a mock of API interface
+type MockAPI struct {
+	ctrl     *gomock.Controller
+	recorder *MockAPIMockRecorder
+}
+
+// MockAPIMockRecorder is the mock recorder for MockAPI
+type MockAPIMockRecorder struct {
+	mock *MockAPI
+}
+
+// NewMockAPI creates a new mock instance
+func NewMockAPI(ctrl *gomock.Controller) *MockAPI {
+	mock := &MockAPI{ctrl: ctrl}
+	mock.recorder = &MockAPIMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockAPI) EXPECT() *MockAPIMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method
+func (m *MockAPI) Get(responseModel interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", responseModel)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Get indicates an expected call of Get
+func (mr *MockAPIMockRecorder) Get(responseModel interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAPI)(nil).Get), responseModel)
+}
+
+// GetVia mocks base method
+func (m *MockAPI) GetVia(path string, responseModel interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetVia", path, responseModel)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetVia indicates an expected call of GetVia
+func (mr *MockAPIMockRecorder) GetVia(path, responseModel interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVia", reflect.TypeOf((*MockAPI)(nil).GetVia), path, responseModel)
+}
+
+// Post mocks base method
+func (m *MockAPI) Post(data, responseModel interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Post", data, responseModel)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Post indicates an expected call of Post
+func (mr *MockAPIMockRecorder) Post(data, responseModel interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockAPI)(nil).Post), data, responseModel)
+}
+
+// PostVia mocks base method
+func (m *MockAPI) PostVia(path string, data, responseModel interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PostVia", path, data, responseModel)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PostVia indicates an expected call of PostVia
+func (mr *MockAPIMockRecorder) PostVia(path, data, responseModel interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostVia", reflect.TypeOf((*MockAPI)(nil).PostVia), path, data, responseModel)
+}
+
 // MockGetter is a mock of Getter interface
 type MockGetter struct {
 	ctrl     *gomock.Controller
@@ -58,4 +137,55 @@ func (m *MockGetter) GetVia(path string, responseModel interface{}) error {
 func (mr *MockGetterMockRecorder) GetVia(path, responseModel interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVia", reflect.TypeOf((*MockGetter)(nil).GetVia), path, responseModel)
+}
+
+// MockPoster is a mock of Poster interface
+type MockPoster struct {
+	ctrl     *gomock.Controller
+	recorder *MockPosterMockRecorder
+}
+
+// MockPosterMockRecorder is the mock recorder for MockPoster
+type MockPosterMockRecorder struct {
+	mock *MockPoster
+}
+
+// NewMockPoster creates a new mock instance
+func NewMockPoster(ctrl *gomock.Controller) *MockPoster {
+	mock := &MockPoster{ctrl: ctrl}
+	mock.recorder = &MockPosterMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockPoster) EXPECT() *MockPosterMockRecorder {
+	return m.recorder
+}
+
+// Post mocks base method
+func (m *MockPoster) Post(data, responseModel interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Post", data, responseModel)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Post indicates an expected call of Post
+func (mr *MockPosterMockRecorder) Post(data, responseModel interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockPoster)(nil).Post), data, responseModel)
+}
+
+// PostVia mocks base method
+func (m *MockPoster) PostVia(path string, data, responseModel interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PostVia", path, data, responseModel)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PostVia indicates an expected call of PostVia
+func (mr *MockPosterMockRecorder) PostVia(path, data, responseModel interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostVia", reflect.TypeOf((*MockPoster)(nil).PostVia), path, data, responseModel)
 }

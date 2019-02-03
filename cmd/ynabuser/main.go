@@ -6,19 +6,18 @@ import (
 	"log"
 	"os"
 
-	"github.com/kalledk/go-ynab/ynab"
+	"github.com/kalledk/go-ynab/ynab/api"
 	"github.com/kalledk/go-ynab/ynab/client"
-	"github.com/kalledk/go-ynab/ynab/user"
 )
 
 func main() {
-	accessToken, err := ynab.NewAccessToken(os.Getenv("YNAB_TOKEN"))
+	accessToken, err := api.NewAccessToken(os.Getenv("YNAB_TOKEN"))
 	if err != nil {
 		log.Fatalf("invalid token, %v", err)
 	}
 	c := client.NewClient(accessToken)
 
-	myuser, err := user.GetUser(c)
+	myuser, err := c.User().Get()
 	if err != nil {
 		log.Fatalf("invalid response %v", err)
 	}

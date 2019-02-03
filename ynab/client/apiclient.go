@@ -12,20 +12,12 @@ type APIEndpoint struct {
 	JsonClient JsonClient
 }
 
-func (a *APIEndpoint) Get(responseModel interface{}) (err error) {
-	return nil
-}
-
 func (a *APIEndpoint) GetVia(path string, responseModel interface{}) (err error) {
 	reqUrl, err := a.Url.Parse(path)
 	if err != nil {
 		return
 	}
 	return a.JsonClient.Get(reqUrl, responseModel)
-}
-
-func (a *APIEndpoint) Post(data interface{}, responseModel interface{}) (err error) {
-	return nil
 }
 
 func (a *APIEndpoint) PostVia(path string, data interface{}, responseModel interface{}) (err error) {

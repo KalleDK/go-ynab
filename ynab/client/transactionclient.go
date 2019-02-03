@@ -9,11 +9,11 @@ type TransactionsClient struct {
 	Endpoint endpoint.API
 }
 
-func (c *TransactionsClient) Add(t transaction.SaveTransaction) (transaction.SaveTransactionReplyWrapper, error) {
+func (c *TransactionsClient) Add(t transaction.Transaction) (transaction.Result, error) {
 	return transaction.Post(c.Endpoint, t)
 }
 
-func (c *TransactionsClient) AddList(t transaction.SaveTransactionList) (transaction.SaveTransactionReplyWrapper, error) {
+func (c *TransactionsClient) AddList(t []transaction.Transaction) (transaction.Results, error) {
 	return transaction.PostList(c.Endpoint, t)
 }
 
@@ -25,6 +25,6 @@ type TransactionClient struct {
 	Endpoint endpoint.API
 }
 
-func (c *TransactionClient) Get() (transaction.Detail, error) {
+func (c *TransactionClient) Get() (transaction.Transaction, error) {
 	return transaction.Get(c.Endpoint)
 }

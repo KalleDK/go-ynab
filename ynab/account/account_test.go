@@ -1,5 +1,6 @@
 package account
 
+/*
 import (
 	"encoding/json"
 	"fmt"
@@ -212,3 +213,4 @@ func TestGetList(t *testing.T) {
 		})
 	}
 }
+*/

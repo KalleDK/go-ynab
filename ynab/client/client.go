@@ -12,7 +12,7 @@ import (
 )
 
 type Client struct {
-	Endpoint endpoint.API
+	Endpoint endpoint.BaseEndpoint
 }
 
 var defaultURL, _ = url.Parse("https://api.youneedabudget.com/v1/")

@@ -7,7 +7,7 @@ import (
 )
 
 type Endpoint struct {
-	Base API
+	Base BaseEndpoint
 	Path string
 }
 
@@ -27,8 +27,13 @@ func (e *Endpoint) Post(data interface{}, responseModel interface{}) (err error)
 	return e.PostVia("/", data, responseModel)
 }
 
-func Down(base API, path string) *Endpoint {
+func Down(base BaseEndpoint, path string) *Endpoint {
 	return &Endpoint{base, path}
+}
+
+type BaseEndpoint interface {
+	GetVia(path string, responseModel interface{}) (err error)
+	PostVia(path string, data interface{}, responseModel interface{}) (err error)
 }
 
 type API interface {

@@ -5,7 +5,13 @@ import (
 )
 
 func Get(baseEndpoint endpoint.Getter) (user User, err error) {
-	var response Response
+
+	var response struct {
+		Data struct {
+			User User `json:"user"`
+		} `json:"data"`
+	}
+
 	err = baseEndpoint.Get(&response)
 	if err != nil {
 		return

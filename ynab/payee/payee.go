@@ -6,5 +6,3 @@ type Payee struct {
 	TransferAccountID string `json:"transfer_account_id"`
 	Deleted           bool   `json:"deleted"`
 }
-
-type Payees = []Payee

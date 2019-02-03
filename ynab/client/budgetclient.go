@@ -31,6 +31,10 @@ func (c *BudgetClient) Payees() *PayeesClient {
 	return &PayeesClient{endpoint.Down(c.Endpoint, "payees")}
 }
 
+func (c *BudgetClient) Accounts() *AccountsClient {
+	return &AccountsClient{endpoint.Down(c.Endpoint, "accounts")}
+}
+
 type BudgetSettingsClient struct {
 	Endpoint endpoint.API
 }
@@ -43,6 +47,6 @@ func GetBudgetSettings(client *Client, id budget.ID) (settings.Settings, error) 
 	return client.Budgets().Budget(id).Settings().Get()
 }
 
-func GetTransaction(client *BudgetClient, id transaction.ID) (transaction.Detail, error) {
+func GetTransaction(client *BudgetClient, id transaction.ID) (transaction.Transaction, error) {
 	return client.Transactions().Transaction(id).Get()
 }

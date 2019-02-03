@@ -17,7 +17,7 @@ type PayeesClient struct {
 	Endpoint endpoint.API
 }
 
-func (c *PayeesClient) Get() (payee.Payees, error) {
+func (c *PayeesClient) Get() ([]payee.Payee, error) {
 	return payee.GetList(c.Endpoint)
 }
 
