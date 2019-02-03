@@ -21,10 +21,10 @@ func NewClient(token api.AccessToken) *Client {
 
 	return &Client{
 		Endpoint: &APIEndpoint{
-			Url: defaultURL,
-			JsonClient: &ReflectJsonClient{
+			URL: defaultURL,
+			JSONClient: &ReflectJSONClient{
 				ErrorModel: api.ErrorResponse{},
-				HttpClient: &http.Client{
+				HTTPClient: &http.Client{
 					Transport: &oauth2.Transport{
 						Source: oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token.String()}),
 					},

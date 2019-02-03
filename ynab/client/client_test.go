@@ -14,7 +14,7 @@ import (
 	"github.com/kalledk/go-ynab/ynab/transaction"
 )
 
-func SprintJson(model interface{}) string {
+func SprintJSON(model interface{}) string {
 	data, err := json.MarshalIndent(model, "", "  ")
 	if err != nil {
 		log.Fatal(err)
@@ -28,7 +28,7 @@ func TestUser(t *testing.T) {
 	c := NewClient(token)
 	user, err := GetUser(c)
 	fmt.Printf("Error = %v\n", err)
-	fmt.Printf("User = %v\n", SprintJson(user))
+	fmt.Printf("User = %v\n", SprintJSON(user))
 
 }
 
@@ -39,7 +39,7 @@ func TestBudgetSettings(t *testing.T) {
 	budgetID, _ := budget.NewID(os.Getenv("YNAB_BUDGET"))
 	settings, err := GetBudgetSettings(c, budgetID)
 	fmt.Printf("Error = %v\n", err)
-	fmt.Printf("Settings = %v\n", SprintJson(settings))
+	fmt.Printf("Settings = %v\n", SprintJSON(settings))
 }
 
 func TestBudgetTransaction(t *testing.T) {
@@ -50,7 +50,7 @@ func TestBudgetTransaction(t *testing.T) {
 	budgetClient := client.Budgets().Budget(budgetID)
 	transaction, err := GetTransaction(budgetClient, transactionID)
 	fmt.Printf("Error = %v\n", err)
-	fmt.Printf("Transaction = %v\n", SprintJson(transaction))
+	fmt.Printf("Transaction = %v\n", SprintJSON(transaction))
 }
 
 func TestBudgetAddTransaction(t *testing.T) {
@@ -60,7 +60,7 @@ func TestBudgetAddTransaction(t *testing.T) {
 	payeeID, _ := payee.NewID(os.Getenv("YNAB_PAYEE"))
 	client := NewClient(token)
 	transactionClient := client.Budgets().Budget(budgetID).Transactions()
-	s := transaction.SaveTransaction{
+	s := transaction.Transaction{
 		AccountID: accountID,
 		Date:      "2019-02-01",
 		Amount:    12370,
@@ -69,7 +69,7 @@ func TestBudgetAddTransaction(t *testing.T) {
 	}
 	reply, err := transactionClient.Add(s)
 	fmt.Printf("Error = %v\n", err)
-	fmt.Printf("Transaction = %v\n", SprintJson(reply))
+	fmt.Printf("Transaction = %v\n", SprintJSON(reply))
 }
 
 func TestBudgetAddTransactions(t *testing.T) {
@@ -79,8 +79,8 @@ func TestBudgetAddTransactions(t *testing.T) {
 	payeeID, _ := payee.NewID(os.Getenv("YNAB_PAYEE"))
 	client := NewClient(token)
 	transactionClient := client.Budgets().Budget(budgetID).Transactions()
-	s := transaction.SaveTransactionList{
-		transaction.SaveTransaction{
+	s := []transaction.Transaction{
+		transaction.Transaction{
 			AccountID: accountID,
 			Date:      "2019-02-01",
 			Amount:    12390,
@@ -90,7 +90,7 @@ func TestBudgetAddTransactions(t *testing.T) {
 	}
 	reply, err := transactionClient.AddList(s)
 	fmt.Printf("Error = %v\n", err)
-	fmt.Printf("Transaction = %v\n", SprintJson(reply))
+	fmt.Printf("Transaction = %v\n", SprintJSON(reply))
 }
 
 func TestBudgetPayees(t *testing.T) {
@@ -104,5 +104,5 @@ func TestBudgetPayees(t *testing.T) {
 	payees, err := payeesClient.Get()
 
 	fmt.Printf("Error = %v\n", err)
-	fmt.Printf("Payees = %v\n", SprintJson(payees))
+	fmt.Printf("Payees = %v\n", SprintJSON(payees))
 }

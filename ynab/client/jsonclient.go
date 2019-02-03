@@ -10,7 +10,7 @@ import (
 	"reflect"
 )
 
-type HttpClient interface {
+type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
@@ -18,16 +18,16 @@ type AuthClient interface {
 	AddAuth(header *http.Header)
 }
 
-type ReflectJsonClient struct {
+type ReflectJSONClient struct {
 	ErrorModel interface{}
-	HttpClient HttpClient
+	HTTPClient HTTPClient
 }
 
-func (c *ReflectJsonClient) Do(method string, regUrl *url.URL, responseModel interface{}, reqbody []byte) (err error) {
+func (c *ReflectJSONClient) Do(method string, reqURL *url.URL, responseModel interface{}, reqbody []byte) (err error) {
 
-	fmt.Printf("%ving: %v\n", method, regUrl)
+	fmt.Printf("%ving: %v\n", method, reqURL)
 
-	req, err := http.NewRequest(method, regUrl.String(), bytes.NewBuffer(reqbody))
+	req, err := http.NewRequest(method, reqURL.String(), bytes.NewBuffer(reqbody))
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func (c *ReflectJsonClient) Do(method string, regUrl *url.URL, responseModel int
 		req.Header.Set("Content-Type", "application/json")
 	}
 
-	res, err := c.HttpClient.Do(req)
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -62,15 +62,15 @@ func (c *ReflectJsonClient) Do(method string, regUrl *url.URL, responseModel int
 	return json.Unmarshal(body, &responseModel)
 }
 
-func (c *ReflectJsonClient) Get(reqUrl *url.URL, responseModel interface{}) (err error) {
-	return c.Do(http.MethodGet, reqUrl, responseModel, nil)
+func (c *ReflectJSONClient) Get(reqURL *url.URL, responseModel interface{}) (err error) {
+	return c.Do(http.MethodGet, reqURL, responseModel, nil)
 }
 
-func (c *ReflectJsonClient) Post(reqUrl *url.URL, data interface{}, responseModel interface{}) (err error) {
+func (c *ReflectJSONClient) Post(reqURL *url.URL, data interface{}, responseModel interface{}) (err error) {
 	body, err := json.Marshal(data)
 	if err != nil {
 		return
 	}
 
-	return c.Do(http.MethodPost, reqUrl, responseModel, body)
+	return c.Do(http.MethodPost, reqURL, responseModel, body)
 }
