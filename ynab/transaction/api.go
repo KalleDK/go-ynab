@@ -15,7 +15,7 @@ type Result struct {
 
 type Results struct {
 	IDs                []ID          `json:"transaction_ids"`
-	Transaction        []Transaction `json:"transactions"`
+	Transactions       []Transaction `json:"transactions"`
 	DuplicateImportIDs []string      `json:"duplicate_import_ids"`
 }
 
