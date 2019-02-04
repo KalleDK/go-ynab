@@ -31,7 +31,7 @@ type saveTransaction struct {
 	AccountID account.ID `json:"account_id"`
 
 	Cleared   ClearingStatus `json:"cleared,omitempty"`
-	FlagColor *FlagColor     `json:"flag_color,omitempty"`
+	FlagColor FlagColor      `json:"flag_color,omitempty"`
 	Approved  bool           `json:"approved,omitempty"`
 
 	ImportID string `json:"import_id,omitempty"`
