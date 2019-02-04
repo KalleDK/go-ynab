@@ -22,19 +22,19 @@ type Results struct {
 type saveTransaction struct {
 	Date   string `json:"date"`
 	Amount int64  `json:"amount"`
-	Memo   string `json:"memo"`
+	Memo   string `json:"memo,omitempty"`
 
-	PayeeID    payee.ID    `json:"payee_id"`
-	PayeeName  string      `json:"payee_name"`
-	CategoryID category.ID `json:"category_id"`
+	PayeeID    payee.ID    `json:"payee_id,omitempty"`
+	PayeeName  string      `json:"payee_name,omitempty"`
+	CategoryID category.ID `json:"category_id,omitempty"`
 
 	AccountID account.ID `json:"account_id"`
 
-	Cleared   ClearingStatus `json:"cleared"`
-	FlagColor FlagColor      `json:"flag_color"`
-	Approved  bool           `json:"approved"`
+	Cleared   ClearingStatus `json:"cleared,omitempty"`
+	FlagColor *FlagColor     `json:"flag_color,omitempty"`
+	Approved  bool           `json:"approved,omitempty"`
 
-	ImportID string `json:"import_id"`
+	ImportID string `json:"import_id,omitempty"`
 }
 
 func makeSaveTransaction(t Transaction) saveTransaction {
