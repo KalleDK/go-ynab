@@ -64,7 +64,7 @@ func TestBudgetAddTransaction(t *testing.T) {
 		AccountID: accountID,
 		Date:      "2019-02-01",
 		Amount:    12370,
-		PayeeID:   payeeID,
+		PayeeName: payeeID.String(),
 		Memo:      "Serial 1234",
 	}
 	reply, err := transactionClient.Add(s)

@@ -1,10 +1,12 @@
 package transaction
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
+
 	"github.com/kalledk/go-ynab/ynab/account"
-	"github.com/kalledk/go-ynab/ynab/category"
 	"github.com/kalledk/go-ynab/ynab/endpoint"
-	"github.com/kalledk/go-ynab/ynab/payee"
 )
 
 type Result struct {
@@ -24,9 +26,9 @@ type saveTransaction struct {
 	Amount int64  `json:"amount"`
 	Memo   string `json:"memo,omitempty"`
 
-	PayeeID    payee.ID    `json:"payee_id,omitempty"`
-	PayeeName  string      `json:"payee_name,omitempty"`
-	CategoryID category.ID `json:"category_id,omitempty"`
+	PayeeID    string `json:"payee_id,omitempty"`
+	PayeeName  string `json:"payee_name,omitempty"`
+	CategoryID string `json:"category_id,omitempty"`
 
 	AccountID account.ID `json:"account_id"`
 
@@ -38,13 +40,14 @@ type saveTransaction struct {
 }
 
 func makeSaveTransaction(t Transaction) saveTransaction {
+
 	return saveTransaction{
 		t.Date,
 		t.Amount,
 		t.Memo,
-		t.PayeeID,
+		t.PayeeID.MarshalString(),
 		t.PayeeName,
-		t.CategoryID,
+		t.CategoryID.MarshalString(),
 		t.AccountID,
 		t.Cleared,
 		t.FlagColor,
@@ -79,6 +82,8 @@ func Post(e endpoint.API, t Transaction) (r Result, err error) {
 		makeSaveTransaction(t),
 	}
 
+	fmt.Println(SprintJSON(data))
+
 	err = e.Post(data, &response)
 	if err != nil {
 		return
@@ -101,9 +106,20 @@ func PostList(e endpoint.API, ts []Transaction) (reply Results, err error) {
 		data.Transactions[i] = makeSaveTransaction(t)
 	}
 
+	fmt.Println(SprintJSON(data))
+
 	err = e.Post(data, &response)
 	if err != nil {
 		return
 	}
 	return response.Data, nil
+}
+
+func SprintJSON(model interface{}) string {
+	data, err := json.MarshalIndent(model, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return string(data)
 }
