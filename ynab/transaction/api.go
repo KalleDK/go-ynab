@@ -2,7 +2,6 @@ package transaction
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"github.com/kalledk/go-ynab/ynab/account"
@@ -82,8 +81,6 @@ func Post(e endpoint.API, t Transaction) (r Result, err error) {
 		makeSaveTransaction(t),
 	}
 
-	fmt.Println(SprintJSON(data))
-
 	err = e.Post(data, &response)
 	if err != nil {
 		return
@@ -105,8 +102,6 @@ func PostList(e endpoint.API, ts []Transaction) (reply Results, err error) {
 	for i, t := range ts {
 		data.Transactions[i] = makeSaveTransaction(t)
 	}
-
-	fmt.Println(SprintJSON(data))
 
 	err = e.Post(data, &response)
 	if err != nil {
