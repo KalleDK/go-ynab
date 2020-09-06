@@ -1,7 +1,8 @@
-module github.com/kalledk/go-ynab
+module github.com/KalleDK/go-ynab
+
+go 1.15
 
 require (
-	github.com/golang/mock v1.2.0
-	github.com/google/uuid v1.1.0
-	golang.org/x/oauth2 v0.0.0-20190130055435-99b60b757ec1
+	github.com/KalleDK/go-money v0.0.0-20200904205632-31356a1d8bf0
+	github.com/google/uuid v1.1.1
 )
