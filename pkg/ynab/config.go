@@ -2,11 +2,11 @@ package ynab
 
 import "net/http"
 
-// BaseURL is the default domain to use
-const BaseURL = "api.youneedabudget.com/v1"
-
 // Scheme is what scheme is used to talkt to the api
 const Scheme = "https://"
+
+// BaseURL is the default domain to use
+const BaseURL = "api.youneedabudget.com/v1"
 
 // HTTPClient is the interface that is needed to reach the internet
 type HTTPClient interface {

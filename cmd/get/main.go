@@ -1,91 +1,90 @@
 package main
 
 import (
-	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/KalleDK/go-ynab/pkg/ynab"
 )
 
-type teeReader struct {
-	io.Closer
-	io.Reader
-}
-
-func (t teeReader) Close() error {
-	os.Stderr.Write([]byte{'\n'})
-	os.Stderr.Sync()
-	return t.Closer.Close()
-}
-
-type wrapped struct {
-	base http.RoundTripper
-}
-
-func (w wrapped) RoundTrip(r *http.Request) (*http.Response, error) {
-	log.Print(r.URL)
-	if r.Body != nil {
-		r.Body = teeReader{r.Body, io.TeeReader(r.Body, os.Stderr)}
-	}
-	resp, err := w.base.RoundTrip(r)
-	if err != nil {
-		return resp, err
-	}
-	fmt.Fprintf(os.Stderr, "StausCode: %v %s\n", resp.StatusCode, resp.Status)
-	/*
-		for k, v := range resp.Header {
-			fmt.Fprintf(os.Stderr, "%s: %v\n", k, v)
-		}
-	*/
-
-	resp.Body = teeReader{resp.Body, io.TeeReader(resp.Body, os.Stderr)}
-	return resp, err
-}
-
 func main() {
 	token := ynab.Token(os.Getenv("TOKEN"))
 
 	client := ynab.Config{
-		Client: &http.Client{
-			Transport: wrapped{http.DefaultTransport},
-		},
 		Token: token,
 	}.NewClient()
-
-	/*
-		budgetID := uuid.MustParse(os.Getenv("BUDGETID"))
-
-		payees, err := client.GetPayees(budgetID)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("%+v\n", payees)
-
-		accounts, err := client.GetAccounts(budgetID)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("%+v\n", accounts)
-
-		catGroups, err := client.GetCategories(budgetID)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("%+v\n", catGroups)
-	*/
-	user, err := client.GetUser()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("User %+v\n", user)
 
 	budgets, err := client.GetBudgets()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Budgets %+v\n", budgets)
+
+	var budget_id ynab.BudgetID
+	for _, b := range budgets {
+		if b.Name == "Demo" {
+			budget_id = b.ID
+		}
+	}
+	if budget_id.IsEmpty() {
+		log.Fatal("No budget found")
+	}
+
+	var account_id ynab.AccountID
+	accounts, err := client.GetAccounts(budget_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, a := range accounts {
+		if a.Name == "Test" {
+			account_id = a.ID
+		}
+	}
+	if account_id.IsEmpty() {
+		log.Fatal("No account found")
+	}
+
+	var payee_id ynab.PayeeID
+	payees, err := client.GetPayees(budget_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, p := range payees {
+		if p.Name == "Coop" {
+			payee_id = p.ID
+		}
+	}
+	if payee_id.IsEmpty() {
+		log.Fatal("No payee found")
+	}
+
+	var category_id ynab.CategoryID
+	catGroups, err := client.GetCategories(budget_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, cg := range catGroups {
+		for _, c := range cg.Categories {
+			if c.Name == "Groceries" {
+				category_id = c.ID
+			}
+		}
+	}
+	if category_id.IsEmpty() {
+		log.Fatal("No category found")
+	}
+
+	var transaction_id ynab.TransactionID
+	transactions, err := client.GetAccountTransactions(budget_id, account_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, t := range transactions {
+		if t.PayeeID != nil && *t.PayeeID == payee_id {
+			transaction_id = t.ID
+		}
+	}
+	if transaction_id.IsEmpty() {
+		log.Fatal("No transaction found")
+	}
 
 }

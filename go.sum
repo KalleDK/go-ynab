@@ -1,6 +1,4 @@
 github.com/KalleDK/go-money v0.0.0-20200904205632-31356a1d8bf0 h1:6i4U5JQT7DJPxkn3cZfdpu1VsZXaChfbXiaudfOr5lQ=
 github.com/KalleDK/go-money v0.0.0-20200904205632-31356a1d8bf0/go.mod h1:lOTjPs2gluHioRNWCBeu46PNE1XTRN2zZ8CrwL2y67M=
-github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
-github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/google/uuid v1.1.2 h1:EVhdT+1Kseyi1/pUmXKaFxYsDNy9RQYkMWRH68J/W7Y=
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
